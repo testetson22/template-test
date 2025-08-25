@@ -63,16 +63,6 @@ spec:
         source: "failing-workflow"
         type: "workflow.completed"
         
-  persistence:
-    postgresql:
-      secretRef:
-        name: sonataflow-psql-postgresql
-        userKey: database-user
-        passwordKey: database-password
-      serviceRef:
-        name: sonataflow-psql-postgresql
-        namespace: sonataflow-infra
-        
   resources:
     limits:
       cpu: "500m"
