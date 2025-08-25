@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: failing-workflow
-  labels:
-    sonataflow.org/workflow-app: failing-workflow
+  tags:
+    - orchestrator
 spec:
   workflow:
     id: failing-workflow
