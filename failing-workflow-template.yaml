@@ -1,5 +1,5 @@
-apiVersion: sonataflow.org/v1alpha08
-kind: SonataFlow
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
 metadata:
   name: failing-workflow
   namespace: sonataflow-infra
