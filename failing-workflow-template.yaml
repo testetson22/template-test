@@ -2,7 +2,6 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: failing-workflow
-  namespace: sonataflow-infra
   labels:
     sonataflow.org/workflow-app: failing-workflow
 spec:
