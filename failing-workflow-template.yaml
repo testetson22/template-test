@@ -1,0 +1,89 @@
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlow
+metadata:
+  name: failing-workflow
+  namespace: sonataflow-infra
+  labels:
+    sonataflow.org/workflow-app: failing-workflow
+spec:
+  workflow:
+    id: failing-workflow
+    name: "Failing Workflow Template"
+    description: "A SonataFlow workflow template designed to fail for testing purposes"
+    version: "1.0.0"
+    start:
+      stateName: "start-state"
+    states:
+      - name: "start-state"
+        type: "operation"
+        actions:
+          - name: "start-operation"
+            functionRef:
+              refName: "start-function"
+        transition: "fail-state"
+        
+      - name: "fail-state"
+        type: "operation"
+        actions:
+          - name: "failing-operation"
+            functionRef:
+              refName: "failing-function"
+            retryableErrors:
+              - "java.lang.RuntimeException"
+              - "java.lang.Exception"
+            maxRetries: 3
+            retryDelay: "PT5S"
+        transition: "end-state"
+        
+      - name: "end-state"
+        type: "end"
+        end: true
+        
+    functions:
+      - name: "start-function"
+        type: "expression"
+        operation: "console.log('Starting failing workflow...')"
+        
+      - name: "failing-function"
+        type: "expression"
+        operation: |
+          // This operation will always fail
+          throw new Error('This operation is designed to fail for testing purposes');
+          
+    events:
+      - name: "workflow-started"
+        source: "failing-workflow"
+        type: "workflow.started"
+        
+      - name: "workflow-failed"
+        source: "failing-workflow"
+        type: "workflow.failed"
+        
+      - name: "workflow-completed"
+        source: "failing-workflow"
+        type: "workflow.completed"
+        
+  persistence:
+    postgresql:
+      secretRef:
+        name: sonataflow-psql-postgresql
+        userKey: database-user
+        passwordKey: database-password
+      serviceRef:
+        name: sonataflow-psql-postgresql
+        namespace: sonataflow-infra
+        
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+      
+  replicas: 1
+  
+  annotations:
+    sonataflow.org/description: "Workflow template designed to fail for testing error handling and retry mechanisms"
+    sonataflow.org/version: "1.0.0"
+    sonataflow.org/category: "testing"
